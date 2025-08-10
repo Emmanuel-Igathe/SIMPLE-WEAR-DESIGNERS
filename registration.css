@@ -1,0 +1,193 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: silver;
+    background-image: url(https://media.gettyimages.com/id/73156806/photo/t-shirts-with-various-country-names-displayed-in-store.jpg?s=612x612&w=gi&k=20&c=-PdMSG-KHZb4r3GR7TbDI67m_8OyJLL218i7qGJ_x3M=);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.registration-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+}
+
+.registration-header {
+    text-align: center;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.registration-header h1 {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.registration-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+/*Navigation Styles*/
+.nav-links {
+    display: flex;
+    gap: 25px;
+    list-style: none;
+    float: left;
+    margin-right: auto;/*Pushes everything else to the right*/
+}
+
+.nav-links a {
+    text-decoration: none;
+    color:#333;
+    font-weight: 600;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color:#ff6b6b;
+}
+
+/*Active link Indicator*/
+.nav-links a.active {
+    color: #ff6b6b;
+    border-bottom: 2px solid #ff6b6b;
+}
+
+.nav-icon {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-group input {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #6e8efb;
+}
+
+.password-requirements {
+    margin-top: 8px;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+.password-requirements p {
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.password-requirements ul {
+    list-style-type: none;
+    color: #888;
+}
+
+.password-requirements li {
+    margin-bottom: 3px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.password-requirements li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+}
+
+.password-requirements li.valid {
+    color: #28a745;
+}
+
+.register-btn {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.register-btn:hover {
+    background-color: #ff6b6b;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+.login-link a {
+    color: #6e8efb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+.validation-message {
+    font-size: 12px;
+    margin-top: 5px;
+    min-height: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .registration-container {
+        padding: 20px;
+    }
+    
+    .registration-header h1 {
+        font-size: 24px;
+    }
+}
