@@ -54,7 +54,7 @@ $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 $servername = "localhost";
 $username = "root";  // Default XAMPP username
 $password = "";      // Default XAMPP password
-$dbname = "simple wear";
+$dbname = "simple-wear";
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);

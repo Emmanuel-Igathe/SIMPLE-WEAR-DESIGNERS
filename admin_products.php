@@ -7,7 +7,7 @@ session_start();
 //}
 
 // Database connection
-$conn = new mysqli('localhost', 'root', '', 'simple wear');
+$conn = new mysqli('localhost', 'root', '', 'simple-wear');
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }

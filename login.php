@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +18,10 @@
             </ul>
         </nav>
         <div class="header-icons">
-            <a href="cart.php"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYDlmGP8qRC2WJ29Fo4r9-iC3uqxDMznboywvaXvsOLO3MU1UV-wsz_N1eu-oG7m9nOKQ&usqp=CAU" alt="Cart" class="nav-icon"></a>
+            <a href="cart.php">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYDlmGP8qRC2WJ29Fo4r9-iC3uqxDMznboywvaXvsOLO3MU1UV-wsz_N1eu-oG7m9nOKQ&usqp=CAU" alt="Cart" class="nav-icon">
+                (<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>)
+            </a>
         </div>
     </header>
 

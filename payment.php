@@ -12,6 +12,7 @@ $paymentData = $_SESSION['checkout_data'];
 $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,9 +85,7 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
                 <li><a href="men.php">MEN</a></li>
                 <li><a href="women.php">WOMEN</a></li>
                 <li><a href="about.php">ABOUT</a></li>
-                <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> 
-                    (<?= $cart_count ?>)
-                </a></li>
+                <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> (<?= $cart_count ?>)</a></li>
             </ul>
         </nav>
     </header>

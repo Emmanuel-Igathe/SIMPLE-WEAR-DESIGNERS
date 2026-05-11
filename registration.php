@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +15,7 @@
                 <li><a href="home.php">HOME</a></li>
                 <li><a href="about.php">ABOUT US</a></li>
                 <li><a href="registration.php">REGISTER</a></li>
-                <li><a href="cart.php"><i class="fas fa-shopping-cart"></i></a></li>
+                <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> (<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>)</a></li>
             </ul>
         </nav>
     </header>

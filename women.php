@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,19 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Women's Collection | Simple Wear</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="women.css">
 </head>
 <body>
     <!-- Header -->
     <header>
-        <h1>SIMPLE WEAR DESIGNERS</h1>
+        <div class="logo-title">
+            <h1>SIMPLE WEAR</h1>
+        </div>
         <nav>
             <ul class="nav-links">
-                <li><a href="home.php">HOME</a></li>
-                <li><a href="about.php">ABOUT US</a></li>
-                <li><a href="men.php">MEN</a></li>
-                <li><a href="women.php">WOMEN</a></li>
-                <li><a href="cart.php"><i class="fas fa-shopping-cart"></i></a></li>
+                <li><a class="nav-link" href="home.php">HOME</a></li>
+                <li><a class="nav-link" href="men.php">MEN</a></li>
+                <li><a class="nav-link" href="women.php">WOMEN</a></li>
+                <li><a class="nav-link" href="about.php">ABOUT US</a></li>
+                <li><a href="cart.php" class="nav-link nav-cart">
+                    <i class="fas fa-shopping-cart"></i> 
+                    (<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>)
+                </a></li>
             </ul>
         </nav>
     </header>
@@ -33,7 +40,7 @@
     <div class="product-container">
         <?php
         // Database connection
-        $conn = new mysqli('localhost', 'root', '', 'simple wear');
+        $conn = new mysqli('localhost', 'root', '', 'simple-wear');
         
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
@@ -72,43 +79,49 @@
     </section>
 
     <footer class="footer">
-            <div class="footer-container">
-                <div class="footer-section">
-                    <h3>Follow us</h3>
-                    <ul class="social-links">
-                        <li><a href="https://web.whatsapp.com/" target="_blank"><img id="social-logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJ75KzcZJMW7mC6vsA8vNOzkAc5AwfOWzN6U6UzC5MhSgeSpAaEvZIddWj6CS3lkgKAQc&usqp=CAU"></a></li>
-                        <li><a href="https://www.facebook.com/login.php/" target="_blank"><img id="social-logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdoxHpvBb2ovxPTGhqtTBdOwGWvZGeJKi7FnJNTdqHSOoxkqfDctqzX29jCKb8Nep7S0o&usqp=CAU"></a></li>
-                        <li><a href="https://www.instagram.com/accounts/login/?hl=en" target="_blank"><img id="social-logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl09hYX3OxCeDnNWkJ00uNvI60MXuvsUuiB2yJ12RBCKA5cXNIn9YP7AlhmUvAnPsOLh0&usqp=CAU"></a></li>
-                        <li><a href="https://twitter.com/login" target="_blank"><img id="social-logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg43G1RrHVBJF3GtS_K8HpFs3k4Hc1_q0LN0rQnMJuDg5_-P2B0sj2vFKqF6UnNr9gluo&usqp=CAU"></a></li>
-                        <li><a href="https://www.tiktok.com/en/" target="_blank"><img id="social-logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTohyGdQMRpi0_pVjKb9HPxZz8OcucFNPJOXEPJ8WxFzq7V6y9ev__Br1xfVsQcR4-ZMIs&usqp=CAU"></a></li>
-                        <li><a href="https://www.linkedin.com/login" target="_blank"><img id="social-logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReariTqhVj4v-OJb_8Q_hKb54qsZ1NOGc5b3LneT43VXUW_1bG6Ajk3NPRRfR0VW8JQEQ&usqp=CAU"></a></li>
-                    </ul>
-                </div>
-            </div>
-                <div class="footer-section">
-                    <h4>Contact Us</h4>
-                    <ul class="Contact-info">
-                        <li><i class="fas fa-envelope"></i><a href="mailto:emmanueligathe4@gmail.com">simplewear@gmail.com</a></li>
-                        <li><i class="fas fa-phone"></i><a href="tel: +254713078800">+25413078800</a></li>
-                        <li><i class="fas fa-map-marker-alt"></i>River Road , Nairobi, Kenya</li>
-                    </ul>            
-                </div>
-                <!--Quick links-->
-                <div class="footer-section">
-                    <h3>QuickLinks</h3>
-                    <ul class="quick-links">
-                        <li><a href="home.php">HOME</a></li>
-                        <li><a href="men.php">MEN</a></li>
-                        <li><a href="women.php">WOMEN</a></li>
-                        <li><a href="about.php">ABOUT US</a></li>
+        <div class="footer-container">
 
-                    </ul>
-
+            <!-- Brand Column -->
+            <div class="footer-section footer-brand">
+                <h2 class="footer-logo">SIMPLE WEAR</h2>
+                <p class="footer-tagline">Premium quality fashion for every style. Founded in Nairobi, Kenya.</p>
+                <div class="footer-social">
+                    <a href="https://web.whatsapp.com/" target="_blank" title="WhatsApp" class="social-icon whatsapp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.facebook.com/" target="_blank" title="Facebook" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/" target="_blank" title="Instagram" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://twitter.com/" target="_blank" title="Twitter" class="social-icon twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.tiktok.com/" target="_blank" title="TikTok" class="social-icon tiktok"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy;2025 <strong>SIMPLE WEARS DESIGNERS</strong>.All Rights Reserved.</p>
+
+            <!-- Quick Links -->
+            <div class="footer-section">
+                <h4 class="footer-heading">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="home.php"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="men.php"><i class="fas fa-chevron-right"></i> Men's Collection</a></li>
+                    <li><a href="women.php"><i class="fas fa-chevron-right"></i> Women's Collection</a></li>
+                    <li><a href="about.php"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="cart.php"><i class="fas fa-chevron-right"></i> My Cart</a></li>
+                </ul>
             </div>
-        </footer>
+
+            <!-- Contact Info -->
+            <div class="footer-section">
+                <h4 class="footer-heading">Contact Us</h4>
+                <ul class="footer-contact">
+                    <li><i class="fas fa-envelope"></i><a href="mailto:simplewear@gmail.com">simplewear@gmail.com</a></li>
+                    <li><i class="fas fa-phone"></i><a href="tel:+254713078800">+254 713 078800</a></li>
+                    <li><i class="fas fa-map-marker-alt"></i>River Road, Nairobi, Kenya</li>
+                    <li><i class="fas fa-clock"></i>Mon–Sat: 8am – 7pm</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 <strong>Simple Wear Designers</strong>. All Rights Reserved. | Made with <i class="fas fa-heart" style="color:#ff6b6b;"></i> in Nairobi</p>
+        </div>
+    </footer>
 </body>
 </html>

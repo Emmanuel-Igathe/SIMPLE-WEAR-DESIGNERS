@@ -1,81 +1,73 @@
 <?php
 session_start();
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "simple wear";
-$conn = new mysqli($servername, $username, $password, $dbname);
+// ---- Handle cart actions FIRST ----
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+// Clear entire cart
+if (isset($_GET['clear_cart'])) {
+    $_SESSION['cart'] = [];
+    header('Location: cart.php');
+    exit();
 }
 
-// Add to cart functionality
-if (isset($_GET['men_add_to_cart'])) {
-    $product_id = $_GET['add_to_cart'];
-    $sql = "SELECT * FROM products WHERE id = $product_id";
-    $result = $conn->query($sql);
-    
-    if ($result->num_rows > 0) {
-        $product = $result->fetch_assoc();
-        
-        // Ensure all required fields are present
-        $required_fields = ['id', 'name', 'price', 'image_url'];
-        foreach ($required_fields as $field) {
-            if (!isset($product[$field])) {
-                die("Product data is missing required field: $field");
+// Remove single item
+if (isset($_GET['remove_from_cart'])) {
+    $pid = $_GET['remove_from_cart'];
+    unset($_SESSION['cart'][$pid]);
+    header('Location: cart.php');
+    exit();
+}
+
+// Update quantity (+/-)
+if (isset($_GET['update_qty']) && isset($_GET['product_id'])) {
+    $pid = $_GET['product_id'];
+    $qty = intval($_GET['update_qty']);
+    if ($qty <= 0) {
+        unset($_SESSION['cart'][$pid]);
+    } elseif (isset($_SESSION['cart'][$pid])) {
+        $_SESSION['cart'][$pid]['quantity'] = $qty;
+    }
+    header('Location: cart.php');
+    exit();
+}
+
+// ---- Migrate old sequential-keyed cart to product_id-keyed cart ----
+if (!empty($_SESSION['cart'])) {
+    $needsMigration = false;
+    foreach ($_SESSION['cart'] as $key => $item) {
+        if (is_int($key) && isset($item['id']) && $key !== $item['id']) {
+            $needsMigration = true;
+            break;
+        }
+    }
+    if ($needsMigration) {
+        $newCart = [];
+        foreach ($_SESSION['cart'] as $item) {
+            $pid = $item['id'];
+            if (isset($newCart[$pid])) {
+                $newCart[$pid]['quantity'] += intval($item['quantity'] ?? 1);
+            } else {
+                $newCart[$pid] = $item;
             }
         }
-        
-        // Initialize cart if not exists
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
-        
-        // Check if product already in cart
-        if (array_key_exists($product_id, $_SESSION['cart'])) {
-            $_SESSION['cart'][$product_id]['quantity'] += 1;
-        } else {
-            // Add new product with all required fields
-            $_SESSION['cart'][$product_id] = [
-                'id' => $product['id'],
-                'name' => $product['name'],
-                'price' => $product['price'],
-                'image_url' => $product['image_url'],
-                'quantity' => 1,
-                'old_price' => $product['old_price'] ?? null,
-                'discount' => $product['discount'] ?? null
-            ];
-        }
+        $_SESSION['cart'] = $newCart;
     }
 }
 
-// Remove from cart
-if (isset($_GET['remove_from_cart'])) {
-    $product_id = $_GET['remove_from_cart'];
-    if (isset($_SESSION['cart'][$product_id])) {
-        unset($_SESSION['cart'][$product_id]);
-    }
-}
-
-// Calculate total amount
-$total = 0;
+// Calculate totals
+$subtotal = 0;
 if (!empty($_SESSION['cart'])) {
-    $subtotal = 0;
-    foreach ($_SESSION['cart'] as $id => $product) {
-        $raw_price = $product['price'] ?? '0';
-        if (!is_numeric($raw_price)) {
-            $price = floatval(preg_replace('/[^0-9.]/', '', explode('-', $raw_price)[0]));
-        } else {
-            $price = floatval($raw_price);
-        }
-        $quantity = $product['quantity'] ?? 1;
-        $subtotal += $price * $quantity;
+    foreach ($_SESSION['cart'] as $product) {
+        $raw   = $product['price'] ?? '0';
+        $price = is_numeric($raw)
+            ? floatval($raw)
+            : floatval(preg_replace('/[^0-9.]/', '', explode('-', $raw)[0]));
+        $subtotal += $price * intval($product['quantity'] ?? 1);
     }
-    $total = $subtotal + 200 + ($subtotal * 0.16); // Add shipping and tax
 }
+$shipping = 150;
+$tax      = $subtotal * 0.16;
+$total    = $subtotal + $shipping + $tax;
 ?>
 
 <!DOCTYPE html>
@@ -85,20 +77,24 @@ if (!empty($_SESSION['cart'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Shopping Cart | Simple Wear</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="cart.css">
 </head>
 <body>
     <!-- Header -->
     <header>
-        <h1>SIMPLE WEAR DESIGNERS</h1>
+        <div class="logo-title">
+            <h1>SIMPLE WEAR</h1>
+        </div>
         <nav>
             <ul class="nav-links">
-                <li><a href="home.php">HOME</a></li>
-                <li><a href="men.php">MEN</a></li>
-                <li><a href="women.php">WOMEN</a></li>
-                <li><a href="about.php">ABOUT</a></li>
-                <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> 
-                    (<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>)
+                <li><a class="nav-link" href="home.php">HOME</a></li>
+                <li><a class="nav-link" href="men.php">MEN</a></li>
+                <li><a class="nav-link" href="women.php">WOMEN</a></li>
+                <li><a class="nav-link" href="about.php">ABOUT US</a></li>
+                <li><a href="cart.php" class="nav-link nav-cart">
+                    <i class="fas fa-shopping-cart"></i> 
+                    CART (<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>)
                 </a></li>
             </ul>
         </nav>
@@ -106,51 +102,52 @@ if (!empty($_SESSION['cart'])) {
 
     <!-- Cart Contents -->
     <section class="cart-container">
-        <h1>Your Shopping Cart</h1>
-        
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h1 style="margin:0;">Your Shopping Cart</h1>
+            <?php if (!empty($_SESSION['cart'])): ?>
+                <form method="GET" action="cart.php" style="display:inline;">
+                    <input type="hidden" name="clear_cart" value="1">
+                    <button type="submit" style="background:#dc3545;color:white;border:none;padding:8px 14px;border-radius:5px;cursor:pointer;font-size:0.9rem;">
+                        <i class="fas fa-trash"></i> Clear Cart
+                    </button>
+                </form>
+            <?php endif; ?>
+        </div>
         <?php if (empty($_SESSION['cart'])): ?>
             <p class="empty-cart">Your cart is empty. <a href="men.php">Continue shopping</a></p>
         <?php else: ?>
             <div class="cart-items">
-                <?php 
-                $subtotal = 0;
-                foreach ($_SESSION['cart'] as $id => $product): 
-                    // Extract numeric price
-                    $raw_price = $product['price'] ?? '0';
-                    if (!is_numeric($raw_price)) {
-                        $price = floatval(preg_replace('/[^0-9.]/', '', explode('-', $raw_price)[0]));
-                    } else {
-                        $price = floatval($raw_price);
-                    }
-                    $quantity = $product['quantity'] ?? 1;
+                <?php foreach ($_SESSION['cart'] as $pid => $product): 
+                    $raw  = $product['price'] ?? '0';
+                    $price = is_numeric($raw)
+                        ? floatval($raw)
+                        : floatval(preg_replace('/[^0-9.]/', '', explode('-', $raw)[0]));
+                    $quantity   = intval($product['quantity'] ?? 1);
                     $item_total = $price * $quantity;
-                    $subtotal += $item_total;
                 ?>
                 <div class="cart-item">
                     <div class="product-image">
-                        <img src="<?= htmlspecialchars($product['image_url'] ?? '') ?>" 
-                             alt="<?= htmlspecialchars($product['name'] ?? '') ?>">
+                        <img src="<?= htmlspecialchars($product['image_url'] ?? '') ?>"
+                             alt="<?= htmlspecialchars($product['name'] ?? 'Product') ?>">
                     </div>
-                    
                     <div class="product-details">
-                        <h2><?= htmlspecialchars($product['name'] ?? '') ?></h2>
+                        <h2><?= htmlspecialchars($product['name'] ?? 'Unknown Product') ?></h2>
                         <div class="price-info">
                             <span class="price">Ksh <?= number_format($price, 2) ?></span>
-                            <?php if (isset($product['old_price']) && floatval($product['old_price']) > $price): ?>
-                                <span class="old-price">was Ksh <?= number_format(floatval($product['old_price']), 2) ?></span>
-                            <?php endif; ?>
                         </div>
-                        
                         <div class="product-options">
                             <div class="quantity-selector">
-                                <label>Quantity: <?= $quantity ?></label>
+                                <label>Qty:</label>
+                                <div style="display:flex;align-items:center;gap:10px;margin-top:5px;">
+                                    <a href="cart.php?update_qty=<?= max(0, $quantity - 1) ?>&product_id=<?= urlencode($pid) ?>" class="qty-btn">&#8722;</a>
+                                    <strong><?= $quantity ?></strong>
+                                    <a href="cart.php?update_qty=<?= $quantity + 1 ?>&product_id=<?= urlencode($pid) ?>" class="qty-btn">+</a>
+                                </div>
                             </div>
-                            
-                            <a href="cart.php?remove_from_cart=<?= $id ?>" class="remove-btn">
+                            <a href="cart.php?remove_from_cart=<?= urlencode($pid) ?>" class="remove-btn">
                                 <i class="fas fa-trash"></i> Remove
                             </a>
                         </div>
-                        
                         <div class="item-total">
                             <p>Item Total: <span>Ksh <?= number_format($item_total, 2) ?></span></p>
                         </div>
@@ -220,41 +217,47 @@ if (!empty($_SESSION['cart'])) {
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
+
+            <!-- Brand Column -->
+            <div class="footer-section footer-brand">
+                <h2 class="footer-logo">SIMPLE WEAR</h2>
+                <p class="footer-tagline">Premium quality fashion for every style. Founded in Nairobi, Kenya.</p>
+                <div class="footer-social">
+                    <a href="https://web.whatsapp.com/" target="_blank" title="WhatsApp" class="social-icon whatsapp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.facebook.com/" target="_blank" title="Facebook" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/" target="_blank" title="Instagram" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://twitter.com/" target="_blank" title="Twitter" class="social-icon twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.tiktok.com/" target="_blank" title="TikTok" class="social-icon tiktok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
             <div class="footer-section">
-                <h3>Follow Us</h3>
-                <ul class="social-links">
-                    <li><a href="#"><i class="fab fa-whatsapp"></i></a></li>
-                    <li><a href="#"><i class="fab fa-facebook"></i></a></li>
-                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                    <li><a href="#"><i class="fab fa-tiktok"></i></a></li>
-                    <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                <h4 class="footer-heading">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="home.php"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="men.php"><i class="fas fa-chevron-right"></i> Men's Collection</a></li>
+                    <li><a href="women.php"><i class="fas fa-chevron-right"></i> Women's Collection</a></li>
+                    <li><a href="about.php"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="cart.php"><i class="fas fa-chevron-right"></i> My Cart</a></li>
                 </ul>
             </div>
-            
+
+            <!-- Contact Info -->
             <div class="footer-section">
-                <h3>Contact Us</h3>
-                <ul class="contact-info">
-                    <li><i class="fas fa-envelope"></i> <a href="mailto:emmanueligathe4@gmail.com">simplewear@gmail.com</a></li>
-                    <li><i class="fas fa-phone"></i> <a href="tel:+254713078800">0713 078800</a></li>
-                    <li><i class="fas fa-map-marker-alt"></i> River Road, Nairobi, Kenya</li>
+                <h4 class="footer-heading">Contact Us</h4>
+                <ul class="footer-contact">
+                    <li><i class="fas fa-envelope"></i><a href="mailto:simplewear@gmail.com">simplewear@gmail.com</a></li>
+                    <li><i class="fas fa-phone"></i><a href="tel:+254713078800">+254 713 078800</a></li>
+                    <li><i class="fas fa-map-marker-alt"></i>River Road, Nairobi, Kenya</li>
+                    <li><i class="fas fa-clock"></i>Mon–Sat: 8am – 7pm</li>
                 </ul>
             </div>
-            
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul class="quick-links">
-                    <li><a href="home.php">Home</a></li>
-                    <li><a href="men.php">Men</a></li>
-                    <li><a href="women.php">Women</a></li>
-                    <li><a href="about.php">About Us</a></li>
-                    <li><a href="cart.php">Your Cart</a></li>
-                </ul>
-            </div>
+
         </div>
-        
+
         <div class="footer-bottom">
-            <p>&copy; <?= date('Y') ?> <strong>SIMPLE WEAR DESIGNERS</strong>.
+            <p>&copy; 2025 <strong>Simple Wear Designers</strong>. All Rights Reserved. | Made with <i class="fas fa-heart" style="color:#ff6b6b;"></i> in Nairobi</p>
         </div>
     </footer>
 </body>

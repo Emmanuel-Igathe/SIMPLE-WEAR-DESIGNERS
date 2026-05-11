@@ -1,27 +1,32 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Simple Wear</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="about.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Header -->
     <header>
-        <a href="home.php" class="header-title">SIMPLE WEAR</a>
+        <div class="logo-title">
+            <h1>SIMPLE WEAR</h1>
+        </div>
         <nav>
             <ul class="nav-links">
-                <li><a href="home.php">HOME</a></li>
-                <li><a href="men.php">MEN</a></li>
-                <li><a href="women.php">WOMEN</a></li>
-                <li><a href="about.php" class="active">ABOUT</a></li>
+                <li><a class="nav-link" href="home.php">HOME</a></li>
+                <li><a class="nav-link" href="men.php">MEN</a></li>
+                <li><a class="nav-link" href="women.php">WOMEN</a></li>
+                <li><a class="nav-link active" href="about.php">ABOUT US</a></li>
+                <li><a href="cart.php" class="nav-link nav-cart">
+                    <i class="fas fa-shopping-cart"></i> 
+                    (<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>)
+                </a></li>
             </ul>
         </nav>
-        <div class="header-icons">
-            <a href="cart.php"><i class="fas fa-shopping-cart nav-icon"></i></a>
-        </div>
     </header>
 
     <main class="about-container">
