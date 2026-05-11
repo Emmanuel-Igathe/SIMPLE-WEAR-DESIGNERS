@@ -7,7 +7,8 @@ session_start();
 //}
 
 // Database connection
-$conn = new mysqli('localhost', 'root', '', 'simple-wear');
+require_once 'db.php';
+$conn = get_db_connection();
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }

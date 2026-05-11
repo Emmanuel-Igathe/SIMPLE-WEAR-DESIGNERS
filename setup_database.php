@@ -1,27 +1,24 @@
 <?php
 // Database connection details
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "simple-wear";
+require_once 'db.php';
 
 // Create connection to MySQL (without selecting DB first to ensure it exists)
-$conn = new mysqli($servername, $username, $password);
+$conn = new mysqli($host, $user, $pass);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
 // Create database if not exists
-$sql = "CREATE DATABASE IF NOT EXISTS `$dbname`";
+$sql = "CREATE DATABASE IF NOT EXISTS `$name`";
 if ($conn->query($sql) === TRUE) {
-    echo "Database '$dbname' ensured.<br>";
+    echo "Database '$name' ensured.<br>";
 } else {
     die("Error creating database: " . $conn->error);
 }
 
 // Select the database
-$conn->select_db($dbname);
+$conn->select_db($name);
 
 // 1. Create registration table
 $sql = "CREATE TABLE IF NOT EXISTS registration (

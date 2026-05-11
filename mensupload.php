@@ -1,12 +1,7 @@
 <?php
 // Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "simple-wear";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+require_once 'db.php';
+$conn = get_db_connection();
 
 // Check connection
 if ($conn->connect_error) {

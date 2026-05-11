@@ -50,15 +50,10 @@ if (!empty($errors)) {
 // Hash password
 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-// Database connection
-$servername = "localhost";
-$username = "root";  // Default XAMPP username
-$password = "";      // Default XAMPP password
-$dbname = "simple-wear";
+require_once 'db.php';
 
 try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conn = get_pdo_connection();
 
     // Check if email already exists
     $stmt = $conn->prepare("SELECT email FROM registration WHERE email = :email");
