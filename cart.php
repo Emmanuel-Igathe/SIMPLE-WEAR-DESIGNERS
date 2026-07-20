@@ -92,6 +92,12 @@ $total    = $subtotal + $shipping + $tax;
                 <li><a class="nav-link" href="men.php">MEN</a></li>
                 <li><a class="nav-link" href="women.php">WOMEN</a></li>
                 <li><a class="nav-link" href="about.php">ABOUT US</a></li>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <li><a class="nav-link" href="profile.php">PROFILE</a></li>
+                    <li><a class="nav-link" href="logout.php">LOGOUT</a></li>
+                <?php else: ?>
+                    <li><a class="nav-link" href="login.php">LOGIN</a></li>
+                <?php endif; ?>
                 <li><a href="cart.php" class="nav-link nav-cart">
                     <i class="fas fa-shopping-cart"></i> 
                     CART (<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>)
@@ -177,13 +183,13 @@ $total    = $subtotal + $shipping + $tax;
                     
                     <div class="summary-row total">
                         <span>Total</span>
-                        <span>Ksh <?= number_format($subtotal + 200 + ($subtotal * 0.16), 2) ?></span>
+                        <span>Ksh <?= number_format($total, 2) ?></span>
                     </div>
                     
                    <!-- Simple Payment Button -->
 <div class="checkout-section">
     <h2>Complete Your Order</h2>
-    <form method="POST" action="checkout.php">
+    <form method="POST" action="process_order.php">
         <input type="hidden" name="total_amount" value="<?= $total ?>">
         <input type="hidden" name="order_id" value="<?= 'ORD-' . uniqid() ?>">
         
@@ -257,7 +263,7 @@ $total    = $subtotal + $shipping + $tax;
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2025 <strong>Simple Wear Designers</strong>. All Rights Reserved. | Made with <i class="fas fa-heart" style="color:#ff6b6b;"></i> in Nairobi</p>
+            <p>&copy; <?= date('Y') ?> <strong>Simple Wear Designers</strong>. All Rights Reserved. | Made with <i class="fas fa-heart" style="color:#ff6b6b;"></i> in Nairobi</p>
         </div>
     </footer>
 </body>

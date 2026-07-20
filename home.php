@@ -21,7 +21,12 @@
                 <li><a class="nav-link" href="men.php">MEN</a></li>
                 <li><a class="nav-link" href="women.php">WOMEN</a></li>
                 <li><a class="nav-link" href="about.php">ABOUT US</a></li> 
-                <li><a class="nav-link" href="login.php">LOGIN</a></li>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <li><a class="nav-link" href="profile.php">PROFILE</a></li>
+                    <li><a class="nav-link" href="logout.php">LOGOUT</a></li>
+                <?php else: ?>
+                    <li><a class="nav-link" href="login.php">LOGIN</a></li>
+                <?php endif; ?>
                 <li><a href="cart.php" class="nav-link nav-cart">
                     <i class="fas fa-shopping-cart"></i> 
                     CART (<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>)
@@ -56,7 +61,7 @@
                 <p>Reviews 78</p>
                 <h3 id="previous-prize"> was ksh 750</h3>
                 <h3>Now Ksh 700</h3>
-                <h4>-20%</h4>
+                <h4>-7%</h4>
                 <form action="men_add_to_cart.php" method="post">
                     <input type="hidden" name="product_id" value="home_1">
                     <input type="hidden" name="product_name" value="Sword T-shirt">
@@ -73,7 +78,7 @@
                 <p>Reviews 78</p>
                 <h3 id="previous-prize"> was ksh 550</h3>
                 <h3>Now Ksh 400</h3>
-                <h4>-20%</h4>
+                <h4>-27%</h4>
                 <form action="men_add_to_cart.php" method="post">
                     <input type="hidden" name="product_id" value="home_2">
                     <input type="hidden" name="product_name" value="Production T-shirt">
@@ -123,9 +128,11 @@
         <section class="animated-showcase">
             <h2>Featured T-shirts</h2>
             <div class="slider-container">
+                <button class="prev-btn">&#8249;</button>
                 <div class="slider-track" id="slider-track">
                     
-                </div>                
+                </div>
+                <button class="next-btn">&#8250;</button>
             </div>
         </section>
     </section>
@@ -171,11 +178,10 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2025 <strong>Simple Wear Designers</strong>. All Rights Reserved. | Made with <i class="fas fa-heart" style="color:#ff6b6b;"></i> in Nairobi</p>
+                <p>&copy; <?= date('Y') ?> <strong>Simple Wear Designers</strong>. All Rights Reserved. | Made with <i class="fas fa-heart" style="color:#ff6b6b;"></i> in Nairobi</p>
             </div>
         </footer>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <script src="script.js"></script>
 </body>
 </html>

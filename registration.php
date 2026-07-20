@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register | Simple Wear</title>
     <link rel="stylesheet" href="registration.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <header>
@@ -13,8 +14,16 @@
         <nav>
             <ul class="nav-links">
                 <li><a href="home.php">HOME</a></li>
+                <li><a href="men.php">MEN</a></li>
+                <li><a href="women.php">WOMEN</a></li>
                 <li><a href="about.php">ABOUT US</a></li>
-                <li><a href="registration.php">REGISTER</a></li>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <li><a href="profile.php">PROFILE</a></li>
+                    <li><a href="logout.php">LOGOUT</a></li>
+                <?php else: ?>
+                    <li><a href="registration.php" class="active">REGISTER</a></li>
+                    <li><a href="login.php">LOGIN</a></li>
+                <?php endif; ?>
                 <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> (<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>)</a></li>
             </ul>
         </nav>
@@ -46,10 +55,7 @@
                 <input type="email" id="email" name="email" required>
             </div>
 
-            <div class="form-group">
-                <label for="address">Physical Address*</label>
-                <input type="text" id="address" name="address" required>
-            </div>
+
 
             <div class="form-group">
                 <label for="city">City*</label>

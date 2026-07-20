@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ... (keep your other products)
   ];
 
-  const sliderTrack = document.getElementById('sliderTrack');
+  const sliderTrack = document.getElementById('slider-track');
   const prevBtn = document.querySelector('.prev-btn');
   const nextBtn = document.querySelector('.next-btn');
 
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <img src="${product.img}" alt="${product.title}">
         <h3>${product.title}</h3>
         <p>${product.price}</p>
-        <a href="cart.html" class="cart-btn">Add to Cart</a>
+        <a href="cart.php" class="cart-btn">Add to Cart</a>
       `;
       sliderTrack.appendChild(slide);
     });

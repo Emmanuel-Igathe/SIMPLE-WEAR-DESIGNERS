@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 
 // Check if form was submitted
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: registration.html");
+    header("Location: registration.php");
     exit();
 }
 
@@ -14,7 +14,6 @@ $firstName = htmlspecialchars(trim($_POST['firstName'] ?? ''));
 $lastName = htmlspecialchars(trim($_POST['lastName'] ?? ''));
 $dob = $_POST['dob'] ?? '';
 $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-$address = htmlspecialchars(trim($_POST['address'] ?? ''));
 $city = htmlspecialchars(trim($_POST['city'] ?? ''));
 $password = $_POST['password'] ?? '';
 $confirmPassword = $_POST['confirmPassword'] ?? '';
@@ -26,7 +25,6 @@ if (empty($firstName)) $errors[] = "First name is required";
 if (empty($lastName)) $errors[] = "Last name is required";
 if (empty($dob)) $errors[] = "Date of birth is required";
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Invalid email format";
-if (empty($address)) $errors[] = "Address is required";
 if (empty($city)) $errors[] = "City is required";
 if (strlen($password) < 8) $errors[] = "Password must be at least 8 characters";
 if ($password !== $confirmPassword) $errors[] = "Passwords do not match";
@@ -43,7 +41,7 @@ if (!empty($errors)) {
         echo "<li>$error</li>";
     }
     echo "</ul>";
-    echo "<p><a href='registration.html'>Go back to registration form</a></p>";
+    echo "<p><a href='registration.php'>Go back to registration form</a></p>";
     exit();
 }
 
@@ -61,19 +59,18 @@ try {
     $stmt->execute();
     
     if ($stmt->rowCount() > 0) {
-        die("Email already registered. <a href='login.php'>Click here to login</a> or <a href='registration.html'>try another email</a>.");
+        die("Email already registered. <a href='login.php'>Click here to login</a> or <a href='registration.php'>try another email</a>.");
     }
 
     // Insert new user - FIXED query with proper placeholders
     $stmt = $conn->prepare("INSERT INTO registration 
-                          (firstName, lastName, dob, email, address, city, password) 
-                          VALUES (:firstName, :lastName, :dob, :email, :address, :city, :password)");
+                          (firstName, lastName, dob, email, city, password) 
+                          VALUES (:firstName, :lastName, :dob, :email, :city, :password)");
     
     $stmt->bindParam(':firstName', $firstName);
     $stmt->bindParam(':lastName', $lastName);
     $stmt->bindParam(':dob', $dob);
     $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':address', $address);
     $stmt->bindParam(':city', $city);
     $stmt->bindParam(':password', $passwordHash); // Using the hashed password
     
@@ -95,7 +92,7 @@ try {
             <h2>Registration Successful!</h2>
             <p>Welcome, $firstName! Your account has been created.</p>
         </div>
-        <p><a href='login.html' class='btn'>Click here to login</a></p>
+        <p><a href='login.php' class='btn'>Click here to login</a></p>
     </body>
     </html>";
     

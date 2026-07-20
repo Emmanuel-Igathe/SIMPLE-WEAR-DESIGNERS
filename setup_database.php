@@ -74,6 +74,37 @@ if ($conn->query($sql) === TRUE) {
     echo "Error creating women table: " . $conn->error . "<br>";
 }
 
+// 4. Create orders table
+$sql = "CREATE TABLE IF NOT EXISTS orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    order_reference VARCHAR(100) UNIQUE NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    status VARCHAR(50) DEFAULT 'completed',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES registration(id) ON DELETE CASCADE
+)";
+if ($conn->query($sql) === TRUE) {
+    echo "Table 'orders' ensured.<br>";
+} else {
+    echo "Error creating orders table: " . $conn->error . "<br>";
+}
+
+// 5. Create order_items table
+$sql = "CREATE TABLE IF NOT EXISTS order_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+)";
+if ($conn->query($sql) === TRUE) {
+    echo "Table 'order_items' ensured.<br>";
+} else {
+    echo "Error creating order_items table: " . $conn->error . "<br>";
+}
+
 echo "<h3>Setup Complete!</h3>";
 echo "<p>Now seeding products...</p>";
 

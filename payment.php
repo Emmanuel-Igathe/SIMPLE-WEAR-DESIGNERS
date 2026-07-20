@@ -199,7 +199,7 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
             <div class="footer-section">
                 <h3>Contact Us</h3>
                 <ul class="contact-info">
-                    <li><i class="fas fa-envelope"></i> <a href="mailto:emmanueligathe4@gmail.com">simplewear@gmail.com</a></li>
+                    <li><i class="fas fa-envelope"></i> <a href="mailto:simplewear@gmail.com">simplewear@gmail.com</a></li>
                     <li><i class="fas fa-phone"></i> <a href="tel:+254713078800">0713 078800</a></li>
                     <li><i class="fas fa-map-marker-alt"></i> River Road, Nairobi, Kenya</li>
                 </ul>

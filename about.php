@@ -21,6 +21,12 @@
                 <li><a class="nav-link" href="men.php">MEN</a></li>
                 <li><a class="nav-link" href="women.php">WOMEN</a></li>
                 <li><a class="nav-link active" href="about.php">ABOUT US</a></li>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <li><a class="nav-link" href="profile.php">PROFILE</a></li>
+                    <li><a class="nav-link" href="logout.php">LOGOUT</a></li>
+                <?php else: ?>
+                    <li><a class="nav-link" href="login.php">LOGIN</a></li>
+                <?php endif; ?>
                 <li><a href="cart.php" class="nav-link nav-cart">
                     <i class="fas fa-shopping-cart"></i> 
                     (<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>)
